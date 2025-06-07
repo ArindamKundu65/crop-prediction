@@ -1,0 +1,126 @@
+/* Body styles */
+body {
+  background-image: url("photo_crop.jpeg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+/* Heading style */
+h1 {
+  font-size: 36px;
+  color: #4CAF50;
+  margin-bottom: 20px;
+}
+
+/* Input fields styling */
+input {
+  width: 70%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  box-sizing: border-box;
+  border-bottom: 4px solid black;
+  font-size: 16px;
+}
+
+/* Button styles */
+button {
+  background-color: #4CAF50;
+  margin: auto;
+  color: white;
+  padding: 15px 100px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin-left: 170px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+/* Predicted crop text styling */
+#predi {
+  margin-left: 60px;
+  color: black; /* changed from white to black */
+  font-size: 20px;
+  font-weight: bold;
+}
+
+/* Crop image style (positioned at the bottom center) */
+.crop-image {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 20px;
+  max-width: 300px;
+  border: 2px solid #ddd;
+  border-radius: 10px;
+}
+
+/* Help button style */
+.help-button {
+  position: fixed;
+  top: 20px;
+  right: 40px;
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* Tips button style */
+.tips-button {
+  position: fixed;
+  top: 65px;
+  right: 40px;
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.help-button:hover, .tips-button:hover {
+  background-color: #45a049;
+}
+
+/* Help and Tips content styling */
+.help-container {
+  max-width: 800px;
+  margin-bottom: 50px;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+h2 {
+  color: green;
+}
+
+p {
+  margin-bottom: 15px;
+  line-height: 1.6;
+}
+
+/* Login box styles */
+.login {
+  padding: 40px;
+  border-radius: 15px;
+  text-align: center;
+  max-width: 600px;
+  width: 90%;
+}
