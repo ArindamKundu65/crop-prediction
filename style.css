@@ -56,7 +56,6 @@ button:hover {
   font-weight: bold;
 }
 
-
 /* Crop image style (positioned at the bottom center) */
 .crop-image {
   display: block;
@@ -72,7 +71,7 @@ button:hover {
 .help-button {
   position: fixed;
   top: 20px;
-  right: 20px;
+  right: 40px;
   background-color: #4CAF50;
   color: white;
   padding: 10px 20px;
@@ -86,7 +85,7 @@ button:hover {
 .tips-button {
   position: fixed;
   top: 65px;
-  right: 20px;
+  right: 40px;
   background-color: #4CAF50;
   color: white;
   padding: 10px 20px;
