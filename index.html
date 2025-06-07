@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Crop Prediction Model</title>
   <link href='https://fonts.googleapis.com/css?family=Pacifico' rel='stylesheet' type='text/css'>
   <link href='https://fonts.googleapis.com/css?family=Arimo' rel='stylesheet' type='text/css'>
@@ -11,21 +11,26 @@
 </head>
 
 <body>
-  <!-- Help and Tips buttons -->
+
+  <!-- Help and Tips buttons (only visible after login) -->
+ <div id="nav-buttons" style="display:none;">
   <button class="help-button" onclick="window.location.href='/help'">Help</button>
   <button class="tips-button" onclick="window.location.href='/tips'">Tips</button>
+</div>
 
-  <div class="login">
+
+  <!-- Crop Prediction form (only visible after login) -->
+  <div class="login" id="crop-section" style="display:none;">
     <h1>Crop Prediction Model</h1>
 
     <form action="{{ url_for('predict') }}" method="post">
-      <input type="text" name="Nitrogen" placeholder="Nitrogen" required="required" />
-      <input type="text" name="Phosphorus" placeholder="Phosphorus" required="required" />
-      <input type="text" name="Potassium" placeholder="Potassium" required="required" />
-      <input type="text" name="temperature" placeholder="Temperature" required="required" />
-      <input type="text" name="humidity" placeholder="Humidity" required="required" />
-      <input type="text" name="pH" placeholder="pH" required="required" />
-      <input type="text" name="rainfall" placeholder="Rainfall" required="required" />
+      <input type="text" name="Nitrogen" placeholder="Nitrogen" required />
+      <input type="text" name="Phosphorus" placeholder="Phosphorus" required />
+      <input type="text" name="Potassium" placeholder="Potassium" required />
+      <input type="text" name="temperature" placeholder="Temperature" required />
+      <input type="text" name="humidity" placeholder="Humidity" required />
+      <input type="text" name="pH" placeholder="pH" required />
+      <input type="text" name="rainfall" placeholder="Rainfall" required />
       <button type="submit" class="btn btn-primary btn-block btn-large">Predict</button>
     </form>
 
@@ -34,11 +39,116 @@
       <h2 id="predi">{{ prediction_text }}</h2>
 
       {% if image_filename %}
-        <img src="{{ url_for('static', filename=image_filename) }}" alt="Predicted Crop Image" class="crop-image">
+        <img src="{{ url_for('static', filename=image_filename) }}" alt="Predicted Crop Image" class="crop-image" />
       {% else %}
         <p>No image available for this crop.</p>
       {% endif %}
     {% endif %}
   </div>
+
+  <!-- Authentication form -->
+  <div id="auth-forms">
+    <h2>Sign Up or Login</h2>
+    <input type="email" id="email" placeholder="Email" />
+    <input type="password" id="password" placeholder="Password" />
+    <div style="margin-top:10px;">
+      <button id="signup-btn">Sign Up</button>
+      <button id="login-btn">Login</button>
+    </div>
+  </div>
+
+  <!-- Logout button (only visible after login) -->
+  <div id="logout-section" style="display:none; margin-top: 20px;">
+    <button id="logout-btn">Logout</button>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBM1yr69XRR_wMSwajSuBojgZhWlT7yDmU",
+      authDomain: "crop-prediction-c3c63.firebaseapp.com",
+      projectId: "crop-prediction-c3c63",
+      storageBucket: "crop-prediction-c3c63.firebasestorage.app",
+      messagingSenderId: "9929523653",
+      appId: "1:9929523653:web:6f1a92656e611f496c8bac",
+      measurementId: "G-EMDNP818F7"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // Elements
+    const authForms = document.getElementById('auth-forms');
+    const cropSection = document.getElementById('crop-section');
+    const navButtons = document.getElementById('nav-buttons');
+    const logoutSection = document.getElementById('logout-section');
+
+    // Sign Up button
+    document.getElementById('signup-btn').addEventListener('click', (e) => {
+      e.preventDefault();
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      if (!email || !password) {
+        alert("Please enter email and password.");
+        return;
+      }
+      createUserWithEmailAndPassword(auth, email, password)
+        .then(() => {
+          alert("Sign up successful! You are now logged in.");
+        })
+        .catch(error => {
+          alert("Error: " + error.message);
+        });
+    });
+
+    // Login button
+    document.getElementById('login-btn').addEventListener('click', (e) => {
+      e.preventDefault();
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      if (!email || !password) {
+        alert("Please enter email and password.");
+        return;
+      }
+      signInWithEmailAndPassword(auth, email, password)
+        .then(() => {
+          alert("Logged in successfully.");
+        })
+        .catch(error => {
+          alert("Error: " + error.message);
+        });
+    });
+
+    // Logout button
+    document.getElementById('logout-btn').addEventListener('click', () => {
+      signOut(auth)
+        .then(() => {
+          alert("Logged out successfully.");
+        })
+        .catch(error => {
+          alert("Error logging out: " + error.message);
+        });
+    });
+
+    // Auth state listener
+    onAuthStateChanged(auth, user => {
+      if (user) {
+        // Logged in
+        authForms.style.display = "none";
+        cropSection.style.display = "block";
+        navButtons.style.display = "block";
+        logoutSection.style.display = "block";
+      } else {
+        // Logged out
+        authForms.style.display = "block";
+        cropSection.style.display = "none";
+        navButtons.style.display = "none";
+        logoutSection.style.display = "none";
+      }
+    });
+  </script>
+
 </body>
 </html>
