@@ -3,34 +3,30 @@
 <head>
   <meta charset="UTF-8" />
   <title>Crop Prediction Model</title>
-  <link href='https://fonts.googleapis.com/css?family=Pacifico' rel='stylesheet' type='text/css'>
-  <link href='https://fonts.googleapis.com/css?family=Arimo' rel='stylesheet' type='text/css'>
-  <link href='https://fonts.googleapis.com/css?family=Hind:300' rel='stylesheet' type='text/css'>
-  <link href='https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
+  <link href="https://fonts.googleapis.com/css?family=Pacifico|Arimo|Hind:300|Open+Sans+Condensed:300" rel="stylesheet">
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
 <body>
 
-  <!-- Help and Tips buttons (only visible after login) -->
- <div id="nav-buttons" style="display:none;">
-  <button class="help-button" onclick="window.location.href='/help'">Help</button>
-  <button class="tips-button" onclick="window.location.href='/tips'">Tips</button>
-</div>
+  <!-- Navigation buttons (visible only when logged in) -->
+  <div id="nav-buttons" style="display:none;">
+    <button class="help-button" onclick="window.location.href='/help'">Help</button>
+    <button class="tips-button" onclick="window.location.href='/tips'">Tips</button>
+  </div>
 
-
-  <!-- Crop Prediction form (only visible after login) -->
+  <!-- Crop Prediction Form (visible only when logged in) -->
   <div class="login" id="crop-section" style="display:none;">
     <h1>Crop Prediction Model</h1>
 
     <form action="{{ url_for('predict') }}" method="post">
-      <input type="text" name="Nitrogen" placeholder="Nitrogen" required />
-      <input type="text" name="Phosphorus" placeholder="Phosphorus" required />
-      <input type="text" name="Potassium" placeholder="Potassium" required />
-      <input type="text" name="temperature" placeholder="Temperature" required />
-      <input type="text" name="humidity" placeholder="Humidity" required />
-      <input type="text" name="pH" placeholder="pH" required />
-      <input type="text" name="rainfall" placeholder="Rainfall" required />
+      <input type="number" name="Nitrogen" placeholder="Nitrogen" required />
+      <input type="number" name="Phosphorus" placeholder="Phosphorus" required />
+      <input type="number" name="Potassium" placeholder="Potassium" required />
+      <input type="number" name="temperature" step="0.1" placeholder="Temperature (°C)" required />
+      <input type="number" name="humidity" step="0.1" placeholder="Humidity (%)" required />
+      <input type="number" name="pH" step="0.1" placeholder="pH Level" required />
+      <input type="number" name="rainfall" step="0.1" placeholder="Rainfall (mm)" required />
       <button type="submit" class="btn btn-primary btn-block btn-large">Predict</button>
     </form>
 
@@ -46,52 +42,61 @@
     {% endif %}
   </div>
 
-  <!-- Authentication form -->
+  <!-- Authentication Forms -->
   <div id="auth-forms">
     <h2>Sign Up or Login</h2>
-    <input type="email" id="email" placeholder="Email" />
-    <input type="password" id="password" placeholder="Password" />
+    <input type="email" id="email" placeholder="Email" required autofocus />
+    <input type="password" id="password" placeholder="Password" required />
     <div style="margin-top:10px;">
       <button id="signup-btn">Sign Up</button>
       <button id="login-btn">Login</button>
     </div>
   </div>
 
-  <!-- Logout button (only visible after login) -->
+  <!-- Logout button -->
   <div id="logout-section" style="display:none; margin-top: 20px;">
     <button id="logout-btn">Logout</button>
   </div>
 
+  <!-- Firebase Auth Script -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-auth.js";
+    import {
+      getAuth,
+      createUserWithEmailAndPassword,
+      signInWithEmailAndPassword,
+      signOut,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-auth.js";
 
+    // Firebase configuration
     const firebaseConfig = {
       apiKey: "AIzaSyBM1yr69XRR_wMSwajSuBojgZhWlT7yDmU",
       authDomain: "crop-prediction-c3c63.firebaseapp.com",
       projectId: "crop-prediction-c3c63",
-      storageBucket: "crop-prediction-c3c63.firebasestorage.app",
+      storageBucket: "crop-prediction-c3c63.appspot.com",
       messagingSenderId: "9929523653",
       appId: "1:9929523653:web:6f1a92656e611f496c8bac",
       measurementId: "G-EMDNP818F7"
     };
 
+    // Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
-    // Elements
+    // DOM Elements
     const authForms = document.getElementById('auth-forms');
     const cropSection = document.getElementById('crop-section');
     const navButtons = document.getElementById('nav-buttons');
     const logoutSection = document.getElementById('logout-section');
 
-    // Sign Up button
+    // Sign Up Handler
     document.getElementById('signup-btn').addEventListener('click', (e) => {
       e.preventDefault();
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value.trim();
       if (!email || !password) {
-        alert("Please enter email and password.");
+        alert("Please enter both email and password.");
         return;
       }
       createUserWithEmailAndPassword(auth, email, password)
@@ -99,17 +104,17 @@
           alert("Sign up successful! You are now logged in.");
         })
         .catch(error => {
-          alert("Error: " + error.message);
+          alert("Sign up failed: " + error.message);
         });
     });
 
-    // Login button
+    // Login Handler
     document.getElementById('login-btn').addEventListener('click', (e) => {
       e.preventDefault();
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value.trim();
       if (!email || !password) {
-        alert("Please enter email and password.");
+        alert("Please enter both email and password.");
         return;
       }
       signInWithEmailAndPassword(auth, email, password)
@@ -117,36 +122,28 @@
           alert("Logged in successfully.");
         })
         .catch(error => {
-          alert("Error: " + error.message);
+          alert("Login failed: " + error.message);
         });
     });
 
-    // Logout button
+    // Logout Handler
     document.getElementById('logout-btn').addEventListener('click', () => {
       signOut(auth)
         .then(() => {
           alert("Logged out successfully.");
         })
         .catch(error => {
-          alert("Error logging out: " + error.message);
+          alert("Logout failed: " + error.message);
         });
     });
 
-    // Auth state listener
+    // Auth State Listener
     onAuthStateChanged(auth, user => {
-      if (user) {
-        // Logged in
-        authForms.style.display = "none";
-        cropSection.style.display = "block";
-        navButtons.style.display = "block";
-        logoutSection.style.display = "block";
-      } else {
-        // Logged out
-        authForms.style.display = "block";
-        cropSection.style.display = "none";
-        navButtons.style.display = "none";
-        logoutSection.style.display = "none";
-      }
+      const isLoggedIn = !!user;
+      authForms.style.display = isLoggedIn ? "none" : "block";
+      cropSection.style.display = isLoggedIn ? "block" : "none";
+      navButtons.style.display = isLoggedIn ? "block" : "none";
+      logoutSection.style.display = isLoggedIn ? "block" : "none";
     });
   </script>
 
