@@ -1,6 +1,10 @@
-// Import the functions you need
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword
+} from "https://www.gstatic.com/firebasejs/11.9.0/firebase-auth.js";
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-auth.js";
 
 // Firebase configuration
 const firebaseConfig = {
@@ -17,8 +21,9 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
+// Sign-up function
 function SignUpUser(event) {
-  event.preventDefault();  // Prevent form refresh
+  event.preventDefault();
   const email = document.getElementById('email').value;
   const password = document.getElementById('password').value;
 
@@ -33,8 +38,30 @@ function SignUpUser(event) {
     });
 }
 
-// Make sure the DOM is loaded before attaching event listeners
+// Login function
+function LoginUser(event) {
+  event.preventDefault();
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
+
+  signInWithEmailAndPassword(auth, email, password)
+    .then((userCredential) => {
+      console.log("Logged in:", userCredential.user.uid);
+      alert("User logged in successfully!");
+      // Optional: Redirect after login
+      // window.location.href = "dashboard.html";
+    })
+    .catch((error) => {
+      console.error("Error:", error.message);
+      alert("Login failed: " + error.message);
+    });
+}
+
+// Wait for the DOM to load before attaching event listeners
 document.addEventListener("DOMContentLoaded", () => {
   const signUp = document.getElementById('signup');
-  signUp.addEventListener('click', SignUpUser);
+  if (signUp) signUp.addEventListener('click', SignUpUser);
+
+  const login = document.getElementById('login');
+  if (login) login.addEventListener('click', LoginUser);
 });
