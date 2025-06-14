@@ -3,37 +3,47 @@
 <head>
   <meta charset="UTF-8" />
   <title>Crop Prediction Model</title>
-  <link href="https://fonts.googleapis.com/css?family=Pacifico|Arimo|Hind:300|Open+Sans+Condensed:300" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Pacifico" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Arimo" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Hind:300" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300" rel="stylesheet">
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
 <body>
+  <!-- Header -->
+  <header>
+    <div id="header-left" onclick="window.location.href='/'">
+      <img src="{{ url_for('static', filename='images/logo.png') }}" alt="KrishiBot Logo" id="logo-img">
+    </div>
+    <div id="header-center">
+      <h1>KrishiBot</h1>
+    </div>
+    <div id="nav-buttons" style="display: none;">
+      <button class="nav-btn" onclick="window.location.href='/help'">Help</button>
+      <button class="nav-btn" onclick="window.location.href='/tips'">Tips</button>
+      <button id="logout-btn" class="nav-btn">Logout</button>
+    </div>
+  </header>
 
-  <!-- Navigation buttons (visible only when logged in) -->
-  <div id="nav-buttons" style="display:none;">
-    <button class="help-button" onclick="window.location.href='/help'">Help</button>
-    <button class="tips-button" onclick="window.location.href='/tips'">Tips</button>
-  </div>
+  <div style="height: 80px;"></div>
 
-  <!-- Crop Prediction Form (visible only when logged in) -->
+  <!-- Crop Prediction Form -->
   <div class="login" id="crop-section" style="display:none;">
-    <h1>Crop Prediction Model</h1>
-
-    <form action="{{ url_for('predict') }}" method="post">
-      <input type="number" name="Nitrogen" placeholder="Nitrogen" required />
-      <input type="number" name="Phosphorus" placeholder="Phosphorus" required />
-      <input type="number" name="Potassium" placeholder="Potassium" required />
-      <input type="number" name="temperature" step="0.1" placeholder="Temperature (°C)" required />
-      <input type="number" name="humidity" step="0.1" placeholder="Humidity (%)" required />
-      <input type="number" name="pH" step="0.1" placeholder="pH Level" required />
-      <input type="number" name="rainfall" step="0.1" placeholder="Rainfall (mm)" required />
-      <button type="submit" class="btn btn-primary btn-block btn-large">Predict</button>
+    <form action="{{ url_for('predict') }}" method="post" style="display: flex; flex-direction: column; align-items: center;">
+      <input type="text" name="Nitrogen" placeholder="Nitrogen" required />
+      <input type="text" name="Phosphorus" placeholder="Phosphorus" required />
+      <input type="text" name="Potassium" placeholder="Potassium" required />
+      <input type="text" name="temperature" placeholder="Temperature" required />
+      <input type="text" name="humidity" placeholder="Humidity" required />
+      <input type="text" name="pH" placeholder="pH" required />
+      <input type="text" name="rainfall" placeholder="Rainfall" required />
+      <button type="submit" class="btn btn-primary btn-large" style="width: 50%; margin-top: 20px;">Predict</button>
     </form>
 
     {% if prediction_text %}
       <br><br>
       <h2 id="predi">{{ prediction_text }}</h2>
-
       {% if image_filename %}
         <img src="{{ url_for('static', filename=image_filename) }}" alt="Predicted Crop Image" class="crop-image" />
       {% else %}
@@ -42,110 +52,43 @@
     {% endif %}
   </div>
 
-  <!-- Authentication Forms -->
+  <!-- Auth Forms -->
   <div id="auth-forms">
-    <h2>Sign Up or Login</h2>
-    <input type="email" id="email" placeholder="Email" required autofocus />
-    <input type="password" id="password" placeholder="Password" required />
-    <div style="margin-top:10px;">
-      <button id="signup-btn">Sign Up</button>
-      <button id="login-btn">Login</button>
-    </div>
+    <h2>Login or Sign Up</h2>
+    <input type="email" id="email" placeholder="Email" autofocus />
+    <input type="password" id="password" placeholder="Password" />
+    <button id="login-btn">Login</button>
+    <button id="signup-btn">Sign Up</button>
   </div>
 
-  <!-- Logout button -->
-  <div id="logout-section" style="display:none; margin-top: 20px;">
-    <button id="logout-btn">Logout</button>
-  </div>
+  <!-- Shift focus from email to password on Enter -->
+  <script>
+    document.getElementById('email').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        document.getElementById('password').focus();
+      }
+    });
 
-  <!-- Firebase Auth Script -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-app.js";
-    import {
-      getAuth,
-      createUserWithEmailAndPassword,
-      signInWithEmailAndPassword,
-      signOut,
-      onAuthStateChanged
-    } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-auth.js";
-
-    // Firebase configuration
-    const firebaseConfig = {
-      apiKey: "AIzaSyBM1yr69XRR_wMSwajSuBojgZhWlT7yDmU",
-      authDomain: "crop-prediction-c3c63.firebaseapp.com",
-      projectId: "crop-prediction-c3c63",
-      storageBucket: "crop-prediction-c3c63.appspot.com",
-      messagingSenderId: "9929523653",
-      appId: "1:9929523653:web:6f1a92656e611f496c8bac",
-      measurementId: "G-EMDNP818F7"
+    // showMessage() toast notification
+    window.showMessage = function (msg, color = '#4caf50') {
+      const box = document.createElement('div');
+      box.textContent = msg;
+      box.style.position = 'fixed';
+      box.style.bottom = '20px';
+      box.style.left = '50%';
+      box.style.transform = 'translateX(-50%)';
+      box.style.backgroundColor = color;
+      box.style.color = 'white';
+      box.style.padding = '10px 20px';
+      box.style.borderRadius = '5px';
+      box.style.zIndex = 9999;
+      document.body.appendChild(box);
+      setTimeout(() => box.remove(), 3000);
     };
-
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-
-    // DOM Elements
-    const authForms = document.getElementById('auth-forms');
-    const cropSection = document.getElementById('crop-section');
-    const navButtons = document.getElementById('nav-buttons');
-    const logoutSection = document.getElementById('logout-section');
-
-    // Sign Up Handler
-    document.getElementById('signup-btn').addEventListener('click', (e) => {
-      e.preventDefault();
-      const email = document.getElementById('email').value.trim();
-      const password = document.getElementById('password').value.trim();
-      if (!email || !password) {
-        alert("Please enter both email and password.");
-        return;
-      }
-      createUserWithEmailAndPassword(auth, email, password)
-        .then(() => {
-          alert("Sign up successful! You are now logged in.");
-        })
-        .catch(error => {
-          alert("Sign up failed: " + error.message);
-        });
-    });
-
-    // Login Handler
-    document.getElementById('login-btn').addEventListener('click', (e) => {
-      e.preventDefault();
-      const email = document.getElementById('email').value.trim();
-      const password = document.getElementById('password').value.trim();
-      if (!email || !password) {
-        alert("Please enter both email and password.");
-        return;
-      }
-      signInWithEmailAndPassword(auth, email, password)
-        .then(() => {
-          alert("Logged in successfully.");
-        })
-        .catch(error => {
-          alert("Login failed: " + error.message);
-        });
-    });
-
-    // Logout Handler
-    document.getElementById('logout-btn').addEventListener('click', () => {
-      signOut(auth)
-        .then(() => {
-          alert("Logged out successfully.");
-        })
-        .catch(error => {
-          alert("Logout failed: " + error.message);
-        });
-    });
-
-    // Auth State Listener
-    onAuthStateChanged(auth, user => {
-      const isLoggedIn = !!user;
-      authForms.style.display = isLoggedIn ? "none" : "block";
-      cropSection.style.display = isLoggedIn ? "block" : "none";
-      navButtons.style.display = isLoggedIn ? "block" : "none";
-      logoutSection.style.display = isLoggedIn ? "block" : "none";
-    });
   </script>
 
+  <!-- Load external JS -->
+  <script type="module" src="{{ url_for('static', filename='auth.js') }}"></script>
 </body>
 </html>
