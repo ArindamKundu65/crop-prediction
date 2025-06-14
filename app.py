@@ -51,4 +51,5 @@ def tips():
     return render_template("tips.html")  # Ensure you have a 'tips.html' in the 'templates' folder
 
 if __name__ == "__main__":
-    flask_app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    flask_app.run(host='0.0.0.0', port=port)
