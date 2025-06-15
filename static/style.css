@@ -44,10 +44,14 @@ header {
   text-align: center;
 }
 #header-center h1 {
-  font-family: 'Pacifico', cursive;
-  font-size: 30px;
-  color: #4CAF50;
-  margin: 0;
+    font-family: 'Pacifico', cursive;
+    font-size: 30px;
+    color: #4CAF50;
+    margin: 0;
+    display: flex
+;
+    justify-content: center;
+    margin-left: 90px;
 }
 
 /* Nav Buttons */
